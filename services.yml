@@ -1,0 +1,73 @@
+version: '3'
+
+services:
+
+    mysql:
+        image: '${PROJECT_NAME}/mysql'
+        container_name: '${PROJECT_NAME}_mysql'
+        hostname: '${MYSQL_HOST}'
+        build:
+            context: './mysql'
+            dockerfile: 'Dockerfile'
+        env_file:
+            - '../../../.env'
+        environment:
+            - 'MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD}'
+        volumes:
+            - '../../../var/mysql:/var/log/app'
+
+    redis:
+        image: '${PROJECT_NAME}/redis'
+        container_name: '${PROJECT_NAME}_redis'
+        hostname: '${REDIS_HOST}'
+        build:
+            context: './redis'
+            dockerfile: 'Dockerfile'
+        ports:
+            - '${REDIS_PORT_BINDING}:${REDIS_PORT}'
+
+    php:
+        image: '${PROJECT_NAME}/php'
+        container_name: '${PROJECT_NAME}_php'
+        hostname: '${PHP_HOST}'
+        build:
+            context: './php'
+            dockerfile: 'Dockerfile'
+        env_file:
+            - '../../../.env'
+        environment:
+            - 'PIMCORE_INSTALL_ADMIN_USERNAME=${PIMCORE_USERNAME}'
+            - 'PIMCORE_INSTALL_ADMIN_PASSWORD=${PIMCORE_PASSWORD}'
+            - 'PIMCORE_INSTALL_MYSQL_HOST_SOCKET=${MYSQL_HOST}'
+            - 'PIMCORE_INSTALL_MYSQL_USERNAME=${MYSQL_USER}'
+            - 'PIMCORE_INSTALL_MYSQL_PASSWORD=${MYSQL_PASSWORD}'
+            - 'PIMCORE_INSTALL_MYSQL_DATABASE=${MYSQL_DATABASE}'
+            - 'PIMCORE_INSTALL_MYSQL_PORT=${MYSQL_PORT}'
+        ports:
+            - '${PHP_PORT_BINDING}:${PHP_PORT}'
+        volumes:
+            - '../../..:/data/projects/pimcore'
+            - '../../../var/php:/var/log/app'
+        working_dir: '/data/projects/pimcore'
+        user: '${USER}'
+        depends_on:
+            - 'mysql'
+            - 'redis'
+
+    apache:
+        image: '${PROJECT_NAME}/apache'
+        container_name: '${PROJECT_NAME}_apache'
+        hostname: '${APACHE_HOST}'
+        build:
+            context: './apache'
+            dockerfile: 'Dockerfile'
+        env_file:
+            - '../../../.env'
+        ports:
+            - '${APACHE_PORT_BINDING}:${APACHE_PORT}'
+        volumes:
+            - '../../..:/data/projects/pimcore'
+            - '../../../var/apache:/var/log/app'
+        working_dir: '/data/projects/pimcore/web'
+        depends_on:
+            - 'php'
