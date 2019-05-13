@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 git clone https://github.com/JeroenVanDerLaan/pimcore-boilerplate.git "5.8"
 
 cp ./install-base.sh 5.8/app/Resources/docker/install.sh
@@ -37,7 +38,7 @@ for i in "${versions[@]}"; do
     mkdir -p $i;
 done
 for i in "${versions[@]}"; do
-    cp -r 5.8 $i
+    cp -r 5.8/* $i/
     cp ./install-base.sh ./$i/app/Resources/docker/install.sh
     PIMCORE_VERSION=$i
     echo "PIMCORE_VERSION=$i" >> ./$i/.env
