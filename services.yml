@@ -3,8 +3,8 @@ version: '3'
 services:
 
     mysql-${PIMCORE_VERSION}:
-        image: '${PROJECT_NAME}/mysql'
-        container_name: '${PROJECT_NAME}_mysql'
+        image: '${PROJECT_NAME}/mysql-${PIMCORE_VERSION}'
+        container_name: '${PROJECT_NAME}_mysql-${PIMCORE_VERSION}'
         hostname: '${MYSQL_HOST}'
         build:
             context: './mysql'
@@ -17,8 +17,8 @@ services:
             - '../../../var/mysql:/var/log/app'
 
     redis-${PIMCORE_VERSION}:
-        image: '${PROJECT_NAME}/redis'
-        container_name: '${PROJECT_NAME}_redis'
+        image: '${PROJECT_NAME}/redis-${PIMCORE_VERSION}'
+        container_name: '${PROJECT_NAME}_redis-${PIMCORE_VERSION}'
         hostname: '${REDIS_HOST}'
         build:
             context: './redis'
@@ -27,8 +27,8 @@ services:
             - '${REDIS_PORT_BINDING}:${REDIS_PORT}'
 
     php-${PIMCORE_VERSION}:
-        image: '${PROJECT_NAME}/php'
-        container_name: '${PROJECT_NAME}_php'
+        image: '${PROJECT_NAME}/php-${PIMCORE_VERSION}'
+        container_name: '${PROJECT_NAME}_php-${PIMCORE_VERSION}'
         hostname: '${PHP_HOST}'
         build:
             context: './php'
@@ -55,8 +55,8 @@ services:
             - 'redis-${PIMCORE_VERSION}'
 
     apache-${PIMCORE_VERSION}:
-        image: '${PROJECT_NAME}/apache'
-        container_name: '${PROJECT_NAME}_apache'
+        image: '${PROJECT_NAME}/apache-${PIMCORE_VERSION}'
+        container_name: '${PROJECT_NAME}_apache-${PIMCORE_VERSION}'
         hostname: '${APACHE_HOST}'
         build:
             context: './apache'
