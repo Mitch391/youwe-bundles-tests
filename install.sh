@@ -1,6 +1,14 @@
+#!/usr/bin/env bash
 git clone https://github.com/JeroenVanDerLaan/pimcore-boilerplate.git 5.8
 rm -rf ./5.8/.git
 rm -rf ./5.8/.gitignore
+
+cp ./install-base.sh 5.8/app/Resources/docker/install.sh
+cp ./services.yml 5.8/app/Resources/docker/services.yml
+
+cd 5.8
+./app/Resources/docker/install.sh
+cd ..
 
 declare -a versions
 versions[0]=5.4.0
