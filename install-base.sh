@@ -17,26 +17,25 @@ bash -c "cp -r app/Resources/docker/php/log var/php/"
 bash -c "cp -r app/Resources/docker/apache/log var/apache/"
 
 #Building images
-docker-compose build --build-arg user=${user} --build-arg uid=${uid} --build-arg gid=${gid} "mysql" "redis" "php" "apache"
+docker-compose build --build-arg user=${user} --build-arg uid=${uid} --build-arg gid=${gid} "mysql-${PIMCORE_VERSION}" "redis-${PIMCORE_VERSION}" "php-${PIMCORE_VERSION}" "apache-${PIMCORE_VERSION}"
 
 #Starting containers
-docker-compose up --no-build --remove-orphans --detach "php"
-docker-compose up --no-build --remove-orphans --detach "mysql" "redis" "apache"
+docker-compose up --no-build --remove-orphans -d "mysql-${PIMCORE_VERSION}" "redis-${PIMCORE_VERSION}" "php-${PIMCORE_VERSION}" "apache-${PIMCORE_VERSION}"
 
 echo "Waiting for comtainers to boot..."
 sleep 5
 
 echo Installing composer packages
-docker-compose exec php bash -c "COMPOSER_MEMORY_LIMIT=-1 composer install --no-suggest --no-interaction --dev -vvv"
+docker-compose exec php-${PIMCORE_VERSION} bash -c "COMPOSER_MEMORY_LIMIT=-1 composer install --no-suggest --no-interaction --dev -vvv"
 
 echo Installing pimcore
-docker-compose exec php bash -c "vendor/bin/pimcore-install --env=dev --ignore-existing-config --no-interaction -vvv"
+docker-compose exec php-${PIMCORE_VERSION} bash -c "vendor/bin/pimcore-install --env=dev --ignore-existing-config --no-interaction -vvv"
 
 echo Installing assets
-docker-compose exec php bash -c "bin/console assets:install --env=dev --symlink -vvv"
+docker-compose exec php-${PIMCORE_VERSION} bash -c "bin/console assets:install --env=dev --symlink -vvv"
 
 echo clearing symfony cache
-docker-compose exec php bash -c "bin/console cache:clear --env=dev --no-interaction --no-warmup -vvv"
+docker-compose exec php-${PIMCORE_VERSION} bash -c "bin/console cache:clear --env=dev --no-interaction --no-warmup -vvv"
 
 echo clearing pimcore cache
-docker-compose exec php bash -c "bin/console pimcore:cache:clear --env=dev --no-interaction -vvv"
+docker-compose exec php-${PIMCORE_VERSION} bash -c "bin/console pimcore:cache:clear --env=dev --no-interaction -vvv"
