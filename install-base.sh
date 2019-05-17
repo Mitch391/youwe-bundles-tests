@@ -5,7 +5,7 @@ uid=$(id -u)
 gid=$(id -g)
 
 #Removing containers and images
-docker-compose stop --volumes --remove-orphans --rmi all
+docker-compose down --volumes --remove-orphans --rmi all
 
 #Removing var directories
 bash -c "rm -rf vendor/ var/ web/var/ web/bundles/"
