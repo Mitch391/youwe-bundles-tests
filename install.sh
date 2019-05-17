@@ -41,8 +41,6 @@ for i in "${versions[@]}"; do
 done
 for i in "${versions[@]}"; do
     cp -r 5.8/. $i
-    cp ./install-base.sh ./$i/app/Resources/docker/install.sh
-    cp ./services.yml ./$i/app/Resources/docker/services.yml
     sed "s/\${PIMCORE_VERSION}/$i/g" composer-base.json > ./$i/composer.json
     cd $i
     ./app/Resources/docker/install.sh
