@@ -2,7 +2,7 @@ version: '3'
 
 services:
 
-    mysql:
+    mysql-${PIMCORE_VERSION}:
         image: '${PROJECT_NAME}/mysql'
         container_name: '${PROJECT_NAME}_mysql'
         hostname: '${MYSQL_HOST}'
@@ -16,7 +16,7 @@ services:
         volumes:
             - '../../../var/mysql:/var/log/app'
 
-    redis:
+    redis-${PIMCORE_VERSION}:
         image: '${PROJECT_NAME}/redis'
         container_name: '${PROJECT_NAME}_redis'
         hostname: '${REDIS_HOST}'
@@ -26,7 +26,7 @@ services:
         ports:
             - '${REDIS_PORT_BINDING}:${REDIS_PORT}'
 
-    php:
+    php-${PIMCORE_VERSION}:
         image: '${PROJECT_NAME}/php'
         container_name: '${PROJECT_NAME}_php'
         hostname: '${PHP_HOST}'
@@ -51,10 +51,10 @@ services:
         working_dir: '/data/projects/pimcore'
         user: '${USER}'
         depends_on:
-            - 'mysql'
-            - 'redis'
+            - 'mysql-${PIMCORE_VERSION}'
+            - 'redis-${PIMCORE_VERSION}'
 
-    apache:
+    apache-${PIMCORE_VERSION}:
         image: '${PROJECT_NAME}/apache'
         container_name: '${PROJECT_NAME}_apache'
         hostname: '${APACHE_HOST}'
@@ -70,4 +70,4 @@ services:
             - '../../../var/apache:/var/log/app'
         working_dir: '/data/projects/pimcore/web'
         depends_on:
-            - 'php'
+            - 'php-${PIMCORE_VERSION}'
