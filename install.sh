@@ -1,14 +1,10 @@
 #!/usr/bin/env bash
-git clone https://github.com/JeroenVanDerLaan/pimcore-boilerplate.git 5.8
+git clone https://github.com/Mitch391/pimcore-boilerplate.git 5.8
 rm -rf ./5.8/.git
 rm -rf ./5.8/.gitignore
 
 cp ./install-base.sh 5.8/app/Resources/docker/install.sh
 cp ./services.yml 5.8/app/Resources/docker/services.yml
-
-cd 5.8
-./app/Resources/docker/install.sh
-cd ..
 
 declare -a versions
 versions[0]=5.4.0
@@ -38,10 +34,10 @@ versions[23]=5.8.2
 
 for i in "${versions[@]}"; do
     mkdir -p $i;
-done
-for i in "${versions[@]}"; do
     cp -r 5.8/. $i
+    sed "s/\${PIMCORE_VERSION}/$i/g" install-base.sh > ./$i/app/Resources/docker/install.sh
     sed "s/\${PIMCORE_VERSION}/$i/g" composer-base.json > ./$i/composer.json
+    sed "s/\${PIMCORE_VERSION}/$i/g" services.yml > ./$i/app/Resources/docker/services.yml
     cd $i
     ./app/Resources/docker/install.sh
     cd ..
